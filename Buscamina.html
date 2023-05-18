@@ -1,0 +1,147 @@
+<Buscaminas.html>
+<html>
+<head>
+  <title>Buscaminas</title>
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      width: 20px;
+      height: 20px;
+      border: 1px solid black;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .mine {
+      background-color: red;
+    }
+
+    .revealed {
+      background-color: lightgray;
+    }
+  </style>
+</head>
+<body>
+  <table id="board"></table>
+
+  <script>
+    const BOARD_SIZE = 5;
+    const NUM_MINES = 5;
+
+    let board = [];
+    let revealed = [];
+
+    function initializeBoard() {
+      for (let i = 0; i < BOARD_SIZE; i++) {
+        board[i] = [];
+        revealed[i] = [];
+        for (let j = 0; j < BOARD_SIZE; j++) {
+          board[i][j] = 0;
+          revealed[i][j] = false;
+        }
+      }
+    }
+
+    function generateMines() {
+      let count = 0;
+      while (count < NUM_MINES) {
+        let row = Math.floor(Math.random() * BOARD_SIZE);
+        let col = Math.floor(Math.random() * BOARD_SIZE);
+        if (board[row][col] !== -1) {
+          board[row][col] = -1;
+          count++;
+        }
+      }
+    }
+
+    function countAdjacentMines(row, col) {
+      let count = 0;
+      for (let i = row - 1; i <= row + 1; i++) {
+        for (let j = col - 1; j <= col + 1; j++) {
+          if (i >= 0 && i < BOARD_SIZE && j >= 0 && j < BOARD_SIZE && board[i][j] === -1) {
+            count++;
+          }
+        }
+      }
+      return count;
+    }
+
+    function generateNumbers() {
+      for (let i = 0; i < BOARD_SIZE; i++) {
+        for (let j = 0; j < BOARD_SIZE; j++) {
+          if (board[i][j] !== -1) {
+            board[i][j] = countAdjacentMines(i, j);
+          }
+        }
+      }
+    }
+
+    function revealCell(row, col) {
+      if (revealed[row][col]) {
+        return;
+      }
+
+      revealed[row][col] = true;
+
+      if (board[row][col] === -1) {
+        alert("¡Has perdido! Has encontrado una mina.");
+        resetGame();
+      } else if (board[row][col] === 0) {
+        for (let i = row - 1; i <= row + 1; i++) {
+          for (let j = col - 1; j <= col + 1; j++) {
+            if (i >= 0 && i < BOARD_SIZE && j >= 0 && j < BOARD_SIZE) {
+              revealCell(i, j);
+            }
+          }
+        }
+      }
+
+      updateBoard();
+    }
+
+    function updateBoard() {
+      const table = document.getElementById("board");
+
+      while (table.firstChild) {
+        table.firstChild.remove();
+      }
+
+      for (let i = 0; i < BOARD_SIZE; i++) {
+        const row = document.createElement("tr");
+        for (let j = 0; j < BOARD_SIZE; j++) {
+          const cell = document.createElement("td");
+          cell.onclick = function() {
+            revealCell(i, j);
+          };
+
+          if (revealed[i][j]) {
+            cell.classList.add("revealed");
+            if (board[i][j] === -1) {
+              cell.classList.add("mine");
+              cell.textContent = "*";
+            } else if (board[i][j] > 0) {
+              cell.textContent = board[i][j];
+            }
+          }
+
+          row.appendChild(cell);
+        }
+        table.appendChild(row);
+      }
+    }
+
+    function resetGame() {
+      initializeBoard();
+      generateMines();
+      generateNumbers();
+      updateBoard();
+    }
+
+    resetGame();
+  </script>
+</body>
+</html>

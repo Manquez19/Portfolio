@@ -1,0 +1,30 @@
+<Dado6html>
+<html>
+<head>
+  <title>Dado de 6 caras</title>
+  <style>
+    .dice {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dado de 6 caras</h1>
+
+  <div class="dice" id="dice" onclick="rollDice()">Click para lanzar el dado</div>
+
+  <script>
+    function rollDice() {
+      const dice = document.getElementById("dice");
+      const randomNumber = Math.floor(Math.random() * 6) + 1;
+      dice.textContent = randomNumber;
+    }
+  </script>
+</body>
+</html>

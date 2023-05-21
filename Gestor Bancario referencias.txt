@@ -1,0 +1,25 @@
+Tabla: Customers
+
+• customer_id (int, clave primaria)
+• first_name (varchar)
+• last_name (varchar)
+• email (varchar)
+• phone (varchar)
+• address (varchar)
+
+Tabla: Accounts
+
+• account_id (int, clave primaria)
+• customer_id (int, clave externa referenciando a Customers.customer_id)
+• account_type (varchar)
+• balance (decimal)
+• open_date (date)
+
+Tabla: Transactions
+
+• transaction_id (int, clave primaria)
+• account_id (int, clave externa referenciando a Accounts.account_id)
+• transaction_type (varchar)
+• amount (decimal)
+• transaction_date (date)
+
